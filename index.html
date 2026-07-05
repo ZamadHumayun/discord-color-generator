@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord ANSI Color Text Generator - Free Online Tool</title>
+    <meta name="description" content="Generate beautiful colored text for Discord using ANSI escape codes. Copy and paste colored text, bold, and underline styles instantly.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <i class="fa-brands fa-discord logo-icon"></i>
+                <h1>Discord <span>ANSI Color</span> Generator</h1>
+            </div>
+            <p class="subtitle">Elevate your Discord messages. Format, color, and design custom texts using standard ANSI formatting.</p>
+        </header>
+
+        <!-- Main Content Grid -->
+        <main class="main-grid">
+            <!-- Left Panel: Editor & Controls -->
+            <section class="panel editor-panel">
+                <div class="panel-header">
+                    <h2><i class="fa-solid fa-pen-to-square"></i> Rich Text Editor</h2>
+                    <span class="badge">Live</span>
+                </div>
+                
+                <!-- Formatting Toolbar -->
+                <div class="toolbar">
+                    <div class="toolbar-group">
+                        <button id="btn-bold" class="tool-btn" title="Bold (Ctrl+B)">
+                            <i class="fa-solid fa-bold"></i>
+                        </button>
+                        <button id="btn-underline" class="tool-btn" title="Underline (Ctrl+U)">
+                            <i class="fa-solid fa-underline"></i>
+                        </button>
+                        <button id="btn-clear" class="tool-btn danger" title="Clear All Formatting">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+
+                    <!-- Text Color Selector -->
+                    <div class="toolbar-group dropdown-container">
+                        <button class="tool-btn dropdown-trigger" title="Text Color">
+                            <i class="fa-solid fa-font"></i>
+                            <span class="color-indicator" id="text-color-indicator"></span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </button>
+                        <div class="color-dropdown text-colors">
+                            <div class="color-grid">
+                                <button class="color-option" data-color="30" style="background-color: #4f545c;" title="Gray"></button>
+                                <button class="color-option" data-color="31" style="background-color: #dc2626;" title="Red"></button>
+                                <button class="color-option" data-color="32" style="background-color: #16a34a;" title="Green"></button>
+                                <button class="color-option" data-color="33" style="background-color: #ca8a04;" title="Yellow"></button>
+                                <button class="color-option" data-color="34" style="background-color: #2563eb;" title="Blue"></button>
+                                <button class="color-option" data-color="35" style="background-color: #db2777;" title="Pink"></button>
+                                <button class="color-option" data-color="36" style="background-color: #0d9488;" title="Cyan"></button>
+                                <button class="color-option" data-color="37" style="background-color: #ffffff; border: 1px dashed #ccc;" title="White"></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Background Color Selector -->
+                    <div class="toolbar-group dropdown-container">
+                        <button class="tool-btn dropdown-trigger" title="Highlight / Background Color">
+                            <i class="fa-solid fa-fill-drip"></i>
+                            <span class="color-indicator bg" id="bg-color-indicator"></span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </button>
+                        <div class="color-dropdown bg-colors">
+                            <div class="color-grid">
+                                <button class="color-option" data-bg="40" style="background-color: #1e1f22;" title="Dark Blue"></button>
+                                <button class="color-option" data-bg="41" style="background-color: #ea580c;" title="Orange"></button>
+                                <button class="color-option" data-bg="42" style="background-color: #0284c7;" title="Marble Blue"></button>
+                                <button class="color-option" data-bg="43" style="background-color: #0891b2;" title="Turquoise"></button>
+                                <button class="color-option" data-bg="44" style="background-color: #4b5563;" title="Gray"></button>
+                                <button class="color-option" data-bg="45" style="background-color: #6366f1;" title="Indigo"></button>
+                                <button class="color-option" data-bg="46" style="background-color: #9ca3af;" title="Light Gray"></button>
+                                <button class="color-option" data-bg="47" style="background-color: #f3f4f6;" title="White"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Editable Text Area -->
+                <div class="editor-container">
+                    <div id="rich-editor" contenteditable="true" placeholder="Type your text here... Select text to color or format it."></div>
+                </div>
+
+                <div class="editor-footer">
+                    <span id="char-counter">0 characters</span>
+                    <span class="tip"><i class="fa-solid fa-circle-info"></i> ANSI colors only render inside code blocks on Discord desktop and web apps.</span>
+                </div>
+            </section>
+
+            <!-- Right Panel: Simulator & Output -->
+            <div class="right-column">
+                <!-- Live Discord Simulator -->
+                <section class="panel simulator-panel">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-desktop"></i> Discord Preview (Dark Mode)</h2>
+                    </div>
+                    
+                    <div class="discord-chat-container">
+                        <div class="discord-message">
+                            <div class="discord-avatar">
+                                <i class="fa-brands fa-discord"></i>
+                            </div>
+                            <div class="discord-content">
+                                <div class="discord-user-header">
+                                    <span class="discord-username">Clyde</span>
+                                    <span class="discord-bot-tag">BOT</span>
+                                    <span class="discord-timestamp">Today at 12:00 PM</span>
+                                </div>
+                                <div class="discord-text">
+                                    <!-- Discord Codeblock Simulator -->
+                                    <div class="discord-codeblock">
+                                        <div class="codeblock-header">ansi</div>
+                                        <pre id="preview-render">Type in the editor to see your preview here...</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Output Panel -->
+                <section class="panel output-panel">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-code"></i> Copy Ready Code</h2>
+                    </div>
+                    <div class="output-container">
+                        <textarea id="raw-output" readonly placeholder="Your code block code will appear here..."></textarea>
+                        <button id="btn-copy" class="btn btn-primary btn-block">
+                            <i class="fa-solid fa-copy"></i> Copy Code
+                        </button>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Information / FAQ Section for SEO -->
+        <section class="info-section">
+            <h2>How to write colored text in Discord?</h2>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h3>What is Discord ANSI formatting?</h3>
+                    <p>Discord uses Markdown formatting for message styles. By wrapping text inside an `ansi` code block, you can use ANSI escape sequences (control codes) to color text and apply bold/underline styles without any bots or plugins.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Does colored text work on Discord Mobile?</h3>
+                    <p>Currently, Discord ANSI colors only render inside code blocks on the Discord Desktop client and the browser-based Web App. On Discord Mobile (iOS/Android), the text will show up as standard white/gray code block text.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>How do I use this generated code?</h3>
+                    <p>Simply click the "Copy Code" button, head over to your Discord app, paste the copied text into any text channel, and press enter. It will automatically render the formatted code block.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Why is my text showing strange characters?</h3>
+                    <p>Make sure you have copied the entire code block including the triple backticks (<code>```ansi</code>) at the start and the triple backticks (<code>```</code>) at the end. The strange characters like <code>[1;31m</code> are the ANSI codes that Discord needs to render the color.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>&copy; 2026 Discord ANSI Color Generator. Built with privacy in mind. All parsing happens locally in your browser.</p>
+        </footer>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast">Code copied to clipboard!</div>
+
+    <!-- Custom JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>
