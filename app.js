@@ -277,6 +277,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Render Discord simulator
         updateSimulatorPreview(editor.innerHTML);
+
+        // Update Fancy Fonts
+        renderFancyFonts(editor.innerText);
     }
 
     // Copy to Clipboard Utility
@@ -307,4 +310,113 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+
+    // Unicode font offset configuration for math characters (no surrogate pair exceptions)
+    const unicodeStyles = {
+        "Cursive Script": {
+            upper: 120016, // Script Bold (no surrogate issues)
+            lower: 120042
+        },
+        "Gothic Fraktur": {
+            upper: 120120, // Fraktur Bold (no surrogate issues)
+            lower: 120146
+        },
+        "Sans-Serif Bold": {
+            upper: 120276,
+            lower: 120302
+        },
+        "Monospace Font": {
+            upper: 120432,
+            lower: 120458,
+            digit: 120822
+        },
+        "Circled Bubbles": {
+            upper: 9398,
+            lower: 9424,
+            digit: 9312 // handles 1-9
+        },
+        "Squared Blocks": {
+            upper: 127280,
+            lower: 127280 // map lowercase to uppercase
+        }
+    };
+
+    function renderFancyFonts(text) {
+        const listContainer = document.getElementById('fancy-fonts-list');
+        if (!listContainer) return;
+        
+        // Clear list
+        listContainer.innerHTML = '';
+        
+        // Clean text (remove placeholder or empty text)
+        const cleanText = text.trim();
+        if (cleanText === '' || cleanText === 'Type your text here... Select text to color or format it.') {
+            listContainer.innerHTML = '<div class="empty-fonts-state" style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 1.5rem; opacity: 0.6;">Type in the editor to see fancy text styles here...</div>';
+            return;
+        }
+
+        const styledNames = Object.keys(unicodeStyles);
+        
+        styledNames.forEach(styleName => {
+            const rule = unicodeStyles[styleName];
+            let translated = '';
+            
+            for (let i = 0; i < cleanText.length; i++) {
+                const char = cleanText[i];
+                const code = char.charCodeAt(0);
+                
+                if (code >= 65 && code <= 90) { // A-Z
+                    translated += String.fromCodePoint(rule.upper + (code - 65));
+                } else if (code >= 97 && code <= 122) { // a-z
+                    translated += String.fromCodePoint(rule.lower + (code - 97));
+                } else if (code >= 48 && code <= 57) { // 0-9
+                    if (styleName === 'Circled Bubbles') {
+                        const digit = code - 48;
+                        translated += String.fromCodePoint(digit === 0 ? 9450 : 9311 + digit);
+                    } else if (rule.digit) {
+                        translated += String.fromCodePoint(rule.digit + (code - 48));
+                    } else {
+                        translated += char;
+                    }
+                } else {
+                    translated += char;
+                }
+            }
+
+            // Create DOM element
+            const item = document.createElement('div');
+            item.className = 'fancy-font-item';
+            item.innerHTML = `
+                <div class="font-info">
+                    <span class="font-label">${styleName}</span>
+                    <span class="font-preview">${escapeHtml(translated)}</span>
+                </div>
+                <button class="btn-copy-font" title="Copy Style">
+                    <i class="fa-solid fa-copy"></i>
+                </button>
+            `;
+
+            // Attach copy listener
+            item.querySelector('.btn-copy-font').addEventListener('click', () => {
+                navigator.clipboard.writeText(translated).then(() => {
+                    toast.textContent = `Copied ${styleName} to clipboard!`;
+                    toast.classList.add('show');
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                    }, 2000);
+                });
+            });
+
+            listContainer.appendChild(item);
+        });
+    }
+
+    function escapeHtml(text) {
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
 });
